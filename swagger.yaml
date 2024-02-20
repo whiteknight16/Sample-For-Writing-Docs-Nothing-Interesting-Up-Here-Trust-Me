@@ -1,0 +1,221 @@
+openapi: 3.0.0
+
+info:
+  title: MyDocs
+  description: Made Just to Practice writing docs
+  version: "1.0.0"
+  contact:
+    name: Harsh Pandey
+    email: harshp21@gmail.com
+
+# servers:
+#   - url: "http://loacalhost:3000/api/v1"
+#     description: For Local Host
+#   - url: "https://loacalhost:3000/api/v1"
+#     description: For Local Host Secured
+
+servers:
+  - url: "{protocol}://loacalhost:3000/api/{version}"
+    description: For Local Host
+    variables:
+      version:
+        enum:
+          - v1
+          - v2
+        default: v1
+      protocol:
+        enum:
+          - http
+          - https
+        default: https
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /:
+    get:
+      tags:
+        - String
+      summary: Return a greet messag
+      responses:
+        "200":
+          description: All good and success
+          content:
+            application/json:
+              schema:
+                type: string
+                example: mystring
+
+  /objects:
+    get:
+      tags:
+        - Object
+      summary: Returns a Object
+      responses:
+        "200":
+          description: All good
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  price:
+                    type: string
+  /courses:
+    get:
+      tags:
+        - Array
+      summary: All courses
+      responses:
+        "200":
+          description: All good
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    price:
+                      type: string
+        "500":
+          description: Server Side Error
+
+  /mycourse/{courseId}:
+    get:
+      tags:
+        - Object
+      summary: Returns course object matching particular ID
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+      responses:
+        "200":
+          description: All good
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  price:
+                    type: string
+        "500":
+          description: Server Side Error
+  /addCourse:
+    post:
+      tags:
+        - String
+      summary: Add a new course to existinig one
+      consumes:
+        - application/json
+      producers:
+        - application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              price:
+                type: string
+
+      responses:
+        "200":
+          description: All good
+          content:
+            application/json:
+              schema:
+                type: boolean
+        "500":
+          description: Server Side Error
+  /courseQuery:
+    get:
+      tags:
+        - Object
+      summary: Gives an object as output
+      parameters:
+        - name: location
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [delhi, agra, varanasi, jaipur]
+        - name: device
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [web, mobile]
+            default: web
+      responses:
+        "200":
+          description: All good
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  value:
+                    type: string
+
+        "500":
+          description: Server Side Error
+  /course/upload:
+    get:
+      tags:
+        - File
+      summary: Uploading Images
+      requestBody:
+        content:
+          multipart/form/data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+
+      responses:
+        "200":
+          description: All good
+          # content:
+          #   application/json:
+          #     schema:
+          #       type: object
+          #       properties:
+          #         name:
+          #           type: string
+          #         value:
+          #           type: string
+
+        "500":
+          description: Server Side Error
